@@ -6,6 +6,12 @@ deployment/.terraform
 dist
 node_modules
 .nyc_output
+.eslintrc.json
+.babelrc
+package.json
+log.js
+rabbitmq.js
 
 # os files
 .DS_Store
+test.sh

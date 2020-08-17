@@ -26,26 +26,27 @@ def getoutput(command, ret=True):
   for line in output:
     print(line)
 
-def task_runner(package, group):
+def task_builder(package, group):
   # determine if the package as a defined task
   # if not, run the group level defined task
-  script = f"{os.environ['CI_JOB_STAGE']}.sh"
+  script = f"{os.environ['STAGE']}.sh"
   package_script = os.path.join(package,"cicd",script)
   group_script = os.path.join(group,"cicd",script)
+  
   if os.path.exists(package_script):
-    getoutput([package_script, package], False)
+    return package_script
   elif os.path.exists(group_script):
-    getoutput([group_script, package], False)
+    return group_script
   else:
     exit(f"Script {script} is not defined for package: {package}!")
 
 def main():
   # check to make sure stage is defined
-  if "CI_JOB_STAGE" not in os.environ:
+  if "STAGE" not in os.environ:
     exit("JOB stage is not defined")
 
   # install git
-  getoutput(["apk","add","git"],False)
+  getoutput(["apk","add","git","bash"],False)
 
   # determine list of files that changed from last commit.
   changed_files = getoutput(["git","log","-1","--name-only","--oneline"])[1:]
@@ -53,10 +54,12 @@ def main():
   # determine unique packages based on package group
   packages = []
   tasks = []
-  for group in sys.argv[1:]:
+  for relgroup in sys.argv[1:]:
+    group = os.path.join(os.environ['CI_PROJECT_DIR'], relgroup)
     print(f"Looking for tasks in package group: {group}")
 
-    for file in changed_files:
+    for fname in changed_files:
+      file = os.path.join(os.environ['CI_PROJECT_DIR'],fname)
 
       # make sure it starts with group
       if not file.startswith(group):
@@ -64,7 +67,7 @@ def main():
       
       # determine package
       relpath = os.path.relpath(os.path.dirname(file), group)
-      if relpath == "." or relpath == "cicd":
+      if relpath == "." or "cicd" in relpath:
         continue
       package = os.path.join(group,pathlib.Path(relpath).parts[0])
       
@@ -73,10 +76,16 @@ def main():
         tasks.append([package,group])
   
   # run tasks for each package
-  for package,group in tasks:
-    print(f"Running tasks in {package}")
-    task_runner(package,group)
-    
+  with open("tasks.sh","w+") as f:
+    for package,group in tasks:
+      print(f"Running tasks in {package}")
+      script = task_builder(package,group)
+      f.write(f"{script} {package}\n")
+  
+  # print out tasks
+  getoutput(["cat","tasks.sh"], False)
+  getoutput(["chmod","+x","tasks.sh"])
+
   print("Done")
 
 if __name__ == "__main__":

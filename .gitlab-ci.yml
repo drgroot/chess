@@ -1,7 +1,5 @@
 stages:
-  - lint
   - test
-  - build
   - deploy
 
 services:
@@ -11,31 +9,40 @@ cache:
 
 # Javascript tasks
 lint:
-  stage: lint
-  image: node:14-alpine
-  before_script:
-    - apk add python make g++ python3
-  script:
-    - ./cicd/taskbuilder.py web services/node
-
-test:
   stage: test
   image: node:14-alpine
+  variables:
+    STAGE: lint
   before_script:
     - apk add python make g++ python3
   script:
     - ./cicd/taskbuilder.py web services/node
-
+    - ./tasks.sh
+test:
+  stage: test
+  image: docker:stable
+  variables:
+    STAGE: test
+    MONGODB: mongodb://docker
+    RABBITMQ: amqp://docker/
+  before_script:
+    - apk add python2 make g++ python3 nodejs npm
+  script:
+    - ./cicd/taskbuilder.py web services/node
+    - ./tasks.sh
 build:
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
-  stage: build
+  stage: test
+  variables:
+    STAGE: build
   before_script:
-    - apk add python3
+    - apk add python2 make g++ python3 nodejs npm
     - if [ ! -z $DOCKER_PASSWORD ]; then docker login --username yusufali -p $DOCKER_PASSWORD; fi
   script:
     - ./cicd/taskbuilder.py web services/node
+    - ./tasks.sh
 
 # terraform
 deploy_images:

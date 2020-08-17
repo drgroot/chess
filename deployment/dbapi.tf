@@ -10,7 +10,7 @@ resource "kubernetes_secret" "database_url" {
 }
 
 data "docker_registry_image" "dbapi" {
-  name = "nginx"
+  name = "yusufali/chess_dbapi"
 }
 
 resource "kubernetes_deployment" "database_api" {

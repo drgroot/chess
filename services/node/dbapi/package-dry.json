@@ -1,0 +1,13 @@
+{
+  "name": "dbapi",
+  "version": "1.0.0",
+  "description": "database abstraction interface",
+  "dry": {
+    "extends": "../package-dry.json"
+  },
+  "dependencies": {
+    "chai": "4.2.0",
+    "mongoose": "5.9.10",
+    "yargs": "15.3.1"
+  }
+}
