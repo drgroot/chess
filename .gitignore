@@ -1,2 +1,11 @@
+# terraform stuff
 deployment/secrets/*
 deployment/.terraform
+
+# nodejs stuff
+dist
+node_modules
+.nyc_output
+
+# os files
+.DS_Store

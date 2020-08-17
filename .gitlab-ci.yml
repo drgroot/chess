@@ -4,11 +4,43 @@ stages:
   - build
   - deploy
 
+services:
+  - docker:dind
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+
+# Javascript tasks
+lint:
+  stage: lint
+  image: node:14-alpine
+  before_script:
+    - apk add python make g++ python3
+  script:
+    - ./cicd/taskbuilder.py web services/node
+
+test:
+  stage: test
+  image: node:14-alpine
+  before_script:
+    - apk add python make g++ python3
+  script:
+    - ./cicd/taskbuilder.py web services/node
+
+build:
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  stage: build
+  before_script:
+    - apk add python3
+    - if [ ! -z $DOCKER_PASSWORD ]; then docker login --username yusufali -p $DOCKER_PASSWORD; fi
+  script:
+    - ./cicd/taskbuilder.py web services/node
+
+# terraform
 deploy_images:
   stage: deploy
   image: docker
-  services:
-    - docker:dind
   before_script:
     - cd deployment
     - apk add bash unzip wget gnupg curl

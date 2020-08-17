@@ -1,0 +1,12 @@
+test
+.dockerignore
+.eslintrc.json
+.git
+.gitignore
+Dockerfile
+README.md
+node_modules
+.nyc_output
+.gitlab-ci.yml
+.DS_Store
+dist
