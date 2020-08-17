@@ -1,0 +1,25 @@
+stages:
+  - lint
+  - test
+  - build
+  - deploy
+
+deploy_images:
+  stage: deploy
+  image: docker
+  services:
+    - docker:dind
+  before_script:
+    - cd deployment
+    - apk add bash unzip wget gnupg curl
+    - wget https://releases.hashicorp.com/terraform/0.12.25/terraform_0.12.25_linux_amd64.zip
+    - unzip *.zip
+    - chmod +x terraform
+    - mv terraform /bin/.
+    - for f in secrets/*.gpg; do echo $SECRET_PASSPHRASE | gpg -d --batch --yes --passphrase-fd 0 "$f" > "secrets/$(basename $f .gpg)"; done
+    - source secrets/env
+    - tar xzvf secrets/kube.tar.gz -C secrets/
+    - terraform init
+  script:
+    - terraform plan
+    - if [ "$CI_COMMIT_REF_NAME" = "master" ]; then terraform apply -auto-approve || true; fi
