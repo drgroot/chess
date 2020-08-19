@@ -1,17 +1,12 @@
 import { assert } from 'chai';
 import app, { queueName } from '../src';
-import command from '../src/transfer';
+import { clearDatabase } from '../src/transfer';
 import rabbitmq from '../src/rabbitmq';
 
 const send = (obj) => rabbitmq.publishMessage(queueName, obj);
-const reset = () => command({
-  _: ['matches', 'versions'],
-  operation: 'drop',
-  skipTransfer: true,
-});
 
 describe('app testing', () => {
-  before(() => reset());
+  before(() => clearDatabase());
 
   it('should start', () => app());
 

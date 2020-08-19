@@ -87,6 +87,15 @@ const transferCommand = async (inputArgs) => {
   await conn.close();
 };
 
+export const clearDatabase = () => transferCommand({
+  operation: 'drop',
+  skipTransfer: true,
+});
+
+export const copyDatabase = () => transferCommand({
+  operation: 'drop',
+});
+
 if (require.main === module) {
   transferCommand()
     .catch((e) => {

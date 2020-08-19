@@ -15,3 +15,5 @@ rabbitmq.js
 # os files
 .DS_Store
 test.sh
+environment
+docker-compose.yml
