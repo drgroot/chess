@@ -23,10 +23,15 @@ test:
   image: docker:stable
   variables:
     STAGE: test
-    MONGODB: mongodb://docker
+    MONGODB: mongodb://docker/
+    MONGO: mongodb://mongo/
     RABBITMQ: amqp://docker/
+    RABBIT: amqp://rabbitmq/
   before_script:
+    - docker run -d -p "5672:5672" --name rabbitmq rabbitmq
+    - docker run -d -p "27017:27017" --name mongo mongo
     - apk add python2 make g++ python3 nodejs npm
+    - sleep 20
   script:
     - ./cicd/taskbuilder.py web services/node
     - ./tasks.sh

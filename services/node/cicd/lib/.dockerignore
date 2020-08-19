@@ -1,13 +1,18 @@
-test
+# other
 .dockerignore
 .eslintrc.json
-.git
-.gitignore
 Dockerfile
 README.md
-node_modules
-.nyc_output
+
+# git and os
 .gitlab-ci.yml
 .DS_Store
-dist
+.git
+.gitignore
+
+# javascript files
 package-dry.json
+dist
+node_modules
+test
+.nyc_output
