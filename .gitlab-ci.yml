@@ -32,6 +32,7 @@ test:
     - docker run -d -p "27017:27017" --name mongo mongo
     - apk add python2 make g++ python3 nodejs npm
     - sleep 20
+    - npm set unsafe-perm true
   script:
     - ./cicd/taskbuilder.py web services/node
     - ./tasks.sh

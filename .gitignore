@@ -17,3 +17,6 @@ rabbitmq.js
 test.sh
 environment
 docker-compose.yml
+
+# build artifacts
+pgn-extract

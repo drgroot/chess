@@ -5,7 +5,8 @@ COPY . /
 
 # Install build tool chain
 RUN apk update && apk add --no-cache --virtual python make g++
-RUN npm install && \
+RUN npm set unsafe-perm true && \
+  npm install && \
   npm run-script build && \
   rm -rf node_modules src && \
   npm install --only=prod
