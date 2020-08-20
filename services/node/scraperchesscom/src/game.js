@@ -63,7 +63,9 @@ const addGame = (user, {
   };
 
   // clean up comments. calculate duration using increment in ms
-  const increment = parseInt(header.TimeControl.replace(/^\d+\+/, '0'), 10) * 1000;
+  const increment = (header.TimeControl.indexOf('+') === -1)
+    ? 0
+    : parseInt(header.TimeControl.replace(/^\d+\+/, '0'), 10) * 1000;
   const clocks = [];
   match.moves.forEach((move, i) => {
     const comments = move.metadata.find((m) => m.key === 'comments');
