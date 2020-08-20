@@ -14,10 +14,9 @@ lint:
   variables:
     STAGE: lint
   before_script:
-    - apk add python make g++ python3
+    - apk add python make g++ git bash
   script:
-    - ./cicd/taskbuilder.py web services/node
-    - ./tasks.sh
+    - ./cicd/runtasks.sh web services/node
 test:
   stage: test
   image: docker:stable
@@ -28,14 +27,11 @@ test:
     RABBITMQ: amqp://docker/
     RABBIT: amqp://rabbitmq/
   before_script:
-    - docker run -d -p "5672:5672" --name rabbitmq rabbitmq
     - docker run -d -p "27017:27017" --name mongo mongo
-    - apk add python2 make g++ python3 nodejs npm
-    - sleep 20
-    - npm set unsafe-perm true
+    - docker run -d -p "5672:5672" --name rabbitmq rabbitmq
+    - apk add python2 make g++ git bash nodejs npm
   script:
-    - ./cicd/taskbuilder.py web services/node
-    - ./tasks.sh
+    - ./cicd/runtasks.sh web services/node lib
 build:
   image: docker:stable
   variables:
@@ -44,11 +40,10 @@ build:
   variables:
     STAGE: build
   before_script:
-    - apk add python2 make g++ python3 nodejs npm
+    - apk add python2 make g++ git bash nodejs npm
     - if [ ! -z $DOCKER_PASSWORD ]; then docker login --username yusufali -p $DOCKER_PASSWORD; fi
   script:
-    - ./cicd/taskbuilder.py web services/node
-    - ./tasks.sh
+    - ./cicd/runtasks.sh web services/node lib
 
 # terraform
 deploy_images:

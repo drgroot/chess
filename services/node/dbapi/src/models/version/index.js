@@ -2,8 +2,8 @@
 import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
+import log from 'chess_jslog';
 import Version from './schema';
-import log from '../../log';
 
 export const migrations = fs.readdirSync(path.join(__dirname, 'migrations'))
   .map((basef) => ({

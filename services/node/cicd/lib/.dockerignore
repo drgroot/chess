@@ -3,6 +3,7 @@
 .eslintrc.json
 Dockerfile
 README.md
+cicd
 
 # git and os
 .gitlab-ci.yml

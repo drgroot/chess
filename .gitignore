@@ -9,12 +9,9 @@ node_modules
 .eslintrc.json
 .babelrc
 package.json
-log.js
-rabbitmq.js
 
 # os files
 .DS_Store
-test.sh
 environment
 docker-compose.yml
 

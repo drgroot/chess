@@ -2,7 +2,7 @@
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-$DIR/pre.sh $1
+$DIR/pre.sh $1 $2
 cd $1
 
 npm audit

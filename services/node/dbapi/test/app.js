@@ -1,7 +1,7 @@
 import { assert } from 'chai';
+import { clearDatabase } from 'chess_jstransfer';
+import rabbitmq from 'chess_jsrabbitmq';
 import app, { queueName } from '../src';
-import { clearDatabase } from '../src/transfer';
-import rabbitmq from '../src/rabbitmq';
 
 const send = (obj) => rabbitmq.publishMessage(queueName, obj);
 

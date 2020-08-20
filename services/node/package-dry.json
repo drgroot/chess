@@ -9,9 +9,8 @@
     "test": "npx nyc mocha --require @babel/register --exit"
   },
   "dependencies": {
-    "nodejsmq": "0.1.5",
-    "winston": "3.3.3",
-    "winston-slack-webhook-transport": "2.0.0"
+    "chess_jslog": "*",
+    "chess_jsrabbitmq": "*"
   },
   "devDependencies": {
     "@babel/cli": "7.10.5",
@@ -24,14 +23,12 @@
     "eslint-plugin-import": "2.22.0",
     "mocha": "8.1.1",
     "nyc": "15.1.0",
-    "chai": "4.2.0"
+    "chai": "4.2.0",
+    "chess_jstransfer": "*"
   },
   "nyc": {
     "exclude": [
-      "test/*.js",
-      "src/log.js",
-      "src/rabbitmq.js",
-      "src/transfer.js"
+      "test/*.js"
     ]
   }
 }

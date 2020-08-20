@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import log from './log';
-import nodeMQ from './rabbitmq';
+import log from 'chess_jslog';
+import { consumer } from 'chess_jsrabbitmq';
 import version from './models/version';
 
 // models
@@ -41,8 +41,7 @@ const inputChecks = (message) => {
 const consumeMessage = (msg, ch, input) => {
   if (!inputChecks(input)) {
     log('[ERROR] invalid inputs', input);
-    const response = { isSuccess: false, results: [], error: 'invalid inputs' };
-    return nodeMQ.reply(msg, ch, response);
+    return Promise.reject(new Error('invalid inputs'));
   }
   log('received message', input);
 
@@ -58,21 +57,7 @@ const consumeMessage = (msg, ch, input) => {
       job = Promise.reject(new Error('invalid model'));
   }
 
-  return Promise.resolve(job)
-    .then((res) => {
-      log('successfully processed job', res);
-      return {
-        isSuccess: true,
-        results: (res.constructor === Array) ? res : [res],
-        error: null,
-      };
-    })
-    .catch((e) => {
-      const error = (e.message) ? e.message : e;
-      log('[ERROR] processing job', error);
-      return { isSuccess: false, results: [], error };
-    })
-    .then((response) => nodeMQ.reply(msg, ch, response));
+  return job;
 };
 
 mongoose.connect(process.env.MONGODB, {
@@ -85,17 +70,11 @@ mongoose.connect(process.env.MONGODB, {
   });
 
 export const queueName = 'dbapi';
-
-const consumer = () => version()
-  .then(() => nodeMQ.consume({
-    queueName,
-    onMessage: consumeMessage,
-    prefetch: (process.env.PREFETCH) ? parseInt(process.env.PREFETCH, 10) : 4,
-    onConsuming: () => log('starting'),
-  }));
+const app = () => version()
+  .then(() => consumer(queueName, consumeMessage));
 
 if (require.main === module) {
-  consumer();
+  app();
 }
 
-export default consumer;
+export default app;

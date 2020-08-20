@@ -4,7 +4,7 @@
 
 # chess.com scraper
 data "docker_registry_image" "scraper_chesscom" {
-  name = "yusufali/chess_scraperchesscom"
+  name = "yusufali/chess_chesscom"
 }
 resource "kubernetes_cron_job" "scraper_chesscom" {
   metadata {

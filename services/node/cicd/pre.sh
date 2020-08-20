@@ -8,25 +8,17 @@ dry install --dry-save-package-json-to . || true
 npm install
 
 if [ ! -f .babelrc ]; then
-  cp ../cicd/lib/.babelrc .
+  cp $2/cicd/lib/.babelrc .
 fi
 
 if [ ! -f .eslintrc.json ]; then
-  cp ../cicd/lib/.eslintrc.json .
+  cp $2/cicd/lib/.eslintrc.json .
 fi
 
 if [ ! -f Dockerfile ]; then 
-  cp ../cicd/lib/Dockerfile .
+  cp $2/cicd/lib/Dockerfile .
 fi
 
 if [ ! -f .dockerignore ]; then
-  cp ../cicd/lib/.dockerignore .
-fi
-
-if [ ! -f src/log.js ]; then
-  cp ../log.js src/.
-fi
-
-if [ ! -f src/rabbitmq.js ]; then
-  cp ../rabbitmq.js src/.
+  cp $2/cicd/lib/.dockerignore .
 fi
