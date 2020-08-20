@@ -14,7 +14,7 @@ const promiseLoop = (tasks, results = []) => {
 };
 
 // TODO: grab this from database on USERS model
-export const users = ['aarange', 'groot_tree', 'abdullahs484', 'MuhammadE', 'grandashak'];
+export const users = ['aarange', 'abdullahs484', 'MuhammadE', 'grandashak'];
 
 const getGames = async (user) => {
   const allGames = [];
