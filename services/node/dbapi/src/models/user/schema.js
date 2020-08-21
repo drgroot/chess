@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const schema = new mongoose.Schema({
   username: { type: String, unique: true, required: true },
@@ -7,6 +7,10 @@ const schema = new mongoose.Schema({
     name: { type: String, required: true, set: (p) => p.trim() },
     token: { type: String, required: true },
     active: { type: Boolean, required: true, default: true },
+  }],
+  scrapeTasks: [{
+    name: { type: String, required: true },
+    params: Schema.Types.Mixed,
   }],
 });
 

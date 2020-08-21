@@ -4,6 +4,7 @@ import {
   addAuthentication,
   removeAuthentication,
 } from './authentication';
+import { addTask, getTasks } from './scrape';
 
 const reject = (method, args, msg) => rejectFun(method, args, msg, 'user');
 
@@ -15,18 +16,14 @@ const handle = ({ method, methodData } = {}) => {
     return reject(method, username, 'username incorrect type or unspecified');
   }
 
-  const authCheck = () => {
-    if (
-      !methodData.name
-      || !methodData.token
-      || typeof methodData.name !== 'string'
-      || typeof methodData.token !== 'string'
-    ) {
-      return reject(method, methodData, 'missing authentication name and token');
-    }
-
-    return Promise.resolve(true);
-  };
+  const authCheck = () => ((
+    !methodData.name
+    || !methodData.token
+    || typeof methodData.name !== 'string'
+    || typeof methodData.token !== 'string'
+  )
+    ? reject(method, methodData, 'missing authentication name and token')
+    : Promise.resolve(true));
 
   switch (method) {
     case 'removeAuthentication':
@@ -40,6 +37,12 @@ const handle = ({ method, methodData } = {}) => {
     case 'login':
       op = authCheck()
         .then(() => findOrCreate(methodData.name, methodData.token, username));
+      break;
+    case 'addScrapeTask':
+      op = addTask(username, methodData.scrapeTask);
+      break;
+    case 'getScrapeTasks':
+      op = getTasks(methodData.scrapename);
       break;
     default:
       return Promise.reject(new Error(`[user]invalid method, ${method}`));

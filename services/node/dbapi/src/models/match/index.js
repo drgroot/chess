@@ -99,7 +99,7 @@ const handle = (input) => {
       op = getRepertoire(methodData.user, methodData.color);
       break;
     case 'noAnnotations':
-      op = noAnnotations(methodData);
+      op = noAnnotations(methodData.version, methodData.annotator);
       break;
     default:
       return Promise.reject(new Error(`[match]invalid method, ${method}`));

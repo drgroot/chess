@@ -5,7 +5,7 @@ import version from './models/version';
 
 // models
 import Match from './models/match';
-// import User from './models/user';
+import User from './models/user';
 
 /**
  * @typedef Message
@@ -50,9 +50,9 @@ const consumeMessage = (msg, ch, input) => {
     case 'match':
       job = Match(input);
       break;
-    // case 'user':
-    //  job = User(input);
-    //  break;
+    case 'user':
+      job = User(input);
+      break;
     default:
       job = Promise.reject(new Error('invalid model'));
   }

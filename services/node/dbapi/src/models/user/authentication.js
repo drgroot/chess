@@ -1,20 +1,22 @@
 import { rejectFun } from '../match';
 import User from './schema';
 
+const promise = (fun) => new Promise((resolve) => fun((e, u) => resolve(u)));
+
 const reject = (method, args, msg) => rejectFun(method, args, msg, 'userAuth');
 
-const findByToken = (name, token) => User.findOne({
+const findByToken = (name, token) => promise((cb) => User.findOne({
   authentication: { $elemMatch: { name, token } },
-}).lean().exec();
+}, cb));
 
-const findByUsername = (username) => User.findOne({ username }).lean().exec();
+export const findByUsername = (username) => promise((cb) => User.findOne({ username }, cb));
 
 export const findOrCreate = (name, token, username) => findByToken(name, token)
   .then((user) => {
     if (user) {
-      const [auth] = user.authentication
-        .filter((a) => a.name === name && a.token === token);
-      if (!auth.active) {
+      const auth = user.authentication
+        .find((a) => a.name === name && a.token === token);
+      if (auth && auth.active === false) {
         return reject('login', { name, token, username }, 'account decativated');
       }
 
@@ -32,28 +34,30 @@ export const addAuthentication = (name, token, username) => findByUsername(usern
         return reject('addAuth', { name, token, username }, 'user does not exist');
       }
 
-      // add, no user has this token
-      if (!tokenUser) {
-        currentUser.authentication.push({ name, token, active: true });
-        return User.findOneAndUpdate({ username }, { authentication: currentUser.authentication })
-          .then(() => currentUser);
+      if (tokenUser) {
+        // error, another user is using this token
+        if (tokenUser.username !== currentUser.username) {
+          return reject('addAuth', { name, token, username }, 'token already used');
+        }
+
+        // in this event, check to make sure authentication is active. if it is active, activate it.
+        const auth = tokenUser.authentication
+          .find((a) => a.name === name && a.token === token);
+        if (auth && !auth.active) {
+          auth.active = true;
+          return tokenUser.save();
+        }
       }
 
-      // error, another user is using this token
-      if (tokenUser.username !== currentUser.username) {
-        return reject('addAuth', { name, token, username }, 'token already used');
+      // make sure currentUser does not have this source already
+      const source = currentUser.authentication.find((a) => a.name === name);
+      if (source) {
+        return reject('addAuth', { name, username }, 'user is already has this source!');
       }
 
-      // in this event, check to make sure authentication is active. if it is active, activate it.
-      const [auth] = tokenUser.authentication
-        .filter((a) => a.name === name && a.token === token);
-      if (!auth.active) {
-        auth.active = true;
-        return User.findOneAndUpdate({ username }, { authentication: tokenUser.authentication })
-          .then(() => tokenUser);
-      }
-
-      return currentUser;
+      // add, since no user has this token
+      currentUser.authentication.push({ name, token, active: true });
+      return currentUser.save();
     }));
 
 export const removeAuthentication = (name, token, username) => findByUsername(username)
@@ -69,12 +73,11 @@ export const removeAuthentication = (name, token, username) => findByUsername(us
         return reject('removeAuth', { name, token, username }, 'token does not belong to user');
       }
 
-      const [auth] = currentUser.authentication
-        .filter((a) => a.name === name && a.token === token);
-      if (auth.active) {
+      const auth = currentUser.authentication
+        .find((a) => a.name === name && a.token === token);
+      if (auth && auth.active) {
         auth.active = false;
-        return User.findOneAndUpdate({ username }, { authentication: currentUser.authentication })
-          .then(() => currentUser);
+        return currentUser.save();
       }
 
       return currentUser;

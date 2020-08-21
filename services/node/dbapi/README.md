@@ -63,5 +63,17 @@ methodData: <mixed>
 
 **method: noAnnotations** 
 ```
-  version
+  { version, annotator }
+```
+
+## Model: User
+
+**method: addScrapeTask** 
+```
+  { username, scrapeTask: { name, params: {...} } }
+```
+
+**method: getScrapeTasks**
+```
+  { username:'t', scrapename }
 ```

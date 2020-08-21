@@ -33,16 +33,19 @@ export const getRepertoire = (user, color) => find({
   repertoire: color,
 });
 
-export const noAnnotations = (version) => find({
+export const noAnnotations = (version, annotator) => find({
   'moves.annotations.version': {
-    $ne: version,
+    $ne: {
+      version,
+      annotator,
+    },
   },
 })
   .then((matches) => matches.filter((match) => {
     const moves = match.moves
       .filter((move) => {
         for (const annotation of move.annotations) {
-          if (annotation.version === version) {
+          if (annotation.version === version && annotation.annotator === annotator) {
             return true;
           }
         }

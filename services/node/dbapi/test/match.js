@@ -142,7 +142,7 @@ describe('Model Match', () => {
         .then(({ results: [match] }) => assert.lengthOf(match.moves[0].annotations, 0))
         .then(() => c('add', { version: 1, annotator: 'stockfish', metadata: [{ key: 'C', value: 1 }] })));
 
-      it('get matches with no annotations', () => send('noAnnotations', 1)
+      it('get matches with no annotations', () => send('noAnnotations', { version: 1, annotator: 'stockfish' })
         .then(({ results }) => assert.notInclude(results.map(({ user }) => user), 'jay')));
     });
 
