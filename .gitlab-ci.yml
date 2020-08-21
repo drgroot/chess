@@ -1,5 +1,6 @@
 stages:
   - test
+  - build
   - deploy
 
 services:
@@ -36,7 +37,7 @@ build:
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
-  stage: test
+  stage: build
   variables:
     STAGE: build
   before_script:
@@ -46,7 +47,7 @@ build:
     - ./cicd/runtasks.sh web services/node lib
 
 # terraform
-deploy_images:
+deploy:
   stage: deploy
   image: docker
   before_script:

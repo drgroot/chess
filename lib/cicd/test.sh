@@ -10,4 +10,7 @@ npm install
 # NPM Version Check
 PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 PUBLISHED_VERSION=$(npm view chess_$REPO version)
-if [ "$PUBLISHED_VERSION" == "$PACKAGE_VERSION" ]; then exit 1; fi
+if [ "$PUBLISHED_VERSION" == "$PACKAGE_VERSION" ]; then
+  echo "$REPO need to increment version!"
+  exit 1; 
+fi
