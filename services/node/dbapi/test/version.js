@@ -1,18 +1,14 @@
 import { assert } from 'chai';
+import { copyDatabase, clearDatabase } from 'chess_jstransfer';
 import upgrade, { migrations, getCurrentVersion } from '../src/models/version';
 import Model from '../src/models/version/schema';
+
+const copy = () => copyDatabase({ limit: 100 });
 
 let currentVersion;
 describe('Version', () => {
   it('should return the correct version from the database', () => getCurrentVersion()
-    .then((version) => {
-      if (!process.env.MIGRATION) {
-        currentVersion = migrations[migrations.length - 1].version;
-        assert.strictEqual(version, currentVersion);
-      } else {
-        currentVersion = version;
-      }
-    }));
+    .then((version) => { currentVersion = version; }));
 
   it('migrations should be integers without missing numbers', () => {
     const versions = migrations.map((m) => m.version);
@@ -26,6 +22,29 @@ describe('Version', () => {
     }
   });
 
+  describe('migrating an existing database', () => {
+    it('copy database', () => copy()).timeout(30000);
+
+    it('should be the latest version', () => getCurrentVersion()
+      .then((version) => {
+        currentVersion = migrations[migrations.length - 1].version;
+        assert.strictEqual(version, currentVersion - 1);
+      }));
+
+    it('should upgrade to the latest version', () => upgrade());
+
+    it('should upgrade in the correct order', () => Model.find({}).sort({ date: -1 })
+      .then((versions) => {
+        for (let i = 0; i < versions.length; i += 1) {
+          if (i > 0) {
+            assert.isBelow(versions[i].version, versions[i - 1].version);
+          }
+        }
+      }));
+
+    after((() => clearDatabase({ collections: ['matches', 'versions', 'users'] })));
+  });
+
   describe('performing a migration', () => {
     it('should upgrade to the latest version', () => upgrade());
 
@@ -36,10 +55,6 @@ describe('Version', () => {
           .reverse();
         const correctPath = migrations.filter((v) => v.version >= currentVersion)
           .map((v) => v.version).reverse();
-
-        if (!process.env.MIGRATION) {
-          assert.lengthOf(versions, 1);
-        }
 
         // make sure that the path to upgrade follows the same order as the migrations
         assert.sameOrderedMembers(upgradePath, correctPath);
