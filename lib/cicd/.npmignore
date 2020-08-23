@@ -21,6 +21,7 @@ src
 test
 examples
 CHANGELOG.md
+package-dry.json
 .editorconfig
 .eslintignore
 .eslintrc

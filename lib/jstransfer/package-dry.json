@@ -1,0 +1,12 @@
+{
+  "name": "chess_jstransfer",
+  "description": "Standard utility to generate testing database",
+  "version": "0.0.3",
+  "dry": {
+    "extends": "../package-dry.json"
+  },
+  "dependencies": {
+    "yargs": "15.3.1",
+    "mongoose": "5.10.0"
+  }
+}

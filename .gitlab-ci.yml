@@ -17,7 +17,7 @@ lint:
   before_script:
     - apk add python make g++ git bash
   script:
-    - ./cicd/runtasks.sh web services/node
+    - ./cicd/runtasks.sh web services/node lib
 test:
   stage: test
   image: docker:stable
