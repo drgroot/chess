@@ -3,8 +3,6 @@ import nodeMQ from 'chess_jsrabbitmq';
 import pgnParser from 'pgn-parser';
 import getMoves from './moves';
 
-const alias = { aarange: 'Yusuf Ali', groot_tree: 'Yusuf Ali' };
-
 const result = {
   '0-1': -1,
   '1-0': 1,
@@ -24,7 +22,7 @@ const getMS = (input) => {
   return ms;
 };
 
-const addGame = (user, {
+const addGame = (user, alias, {
   pgn, white, black, rules, time_class: time,
 }) => {
   const [fullPGN] = pgnParser.parse(pgn);
@@ -40,7 +38,7 @@ const addGame = (user, {
   }), {});
 
   const match = {
-    user: 'aarange', // TODO: get from db
+    user,
     date: new Date(header.Date.replace(/\./, '-')),
     whiteName: (alias[white.username])
       ? alias[white.username] : white.username,

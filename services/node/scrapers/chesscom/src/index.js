@@ -1,52 +1,47 @@
-/* eslint-disable no-await-in-loop */
 import log from 'chess_jslog';
-import { get } from 'axios';
+import { getTasks, getLastEntry } from './dbapi';
+import { getArchives, getGames } from './chesscom';
 import addGame from './game';
 
-const promiseLoop = (tasks, results = []) => {
-  if (tasks.length === 0) return results;
-
-  const job = tasks.shift();
-  return job.then((r) => {
-    results.push(r);
-    return promiseLoop(tasks, results);
+export const filterArchives = (username, lowerDate) => getArchives(username)
+  .then((archives) => {
+    const urls = archives.filter(({ date }) => date.getTime() > lowerDate).map(({ url }) => url);
+    log(`found ${archives.length} archives for ${username}. Taking ${urls.length} for scraping.`, urls);
+    return urls;
   });
-};
 
-// TODO: grab this from database on USERS model
-export const users = ['aarange', 'abdullahs484', 'MuhammadE', 'grandashak'];
-
-const getGames = async (user) => {
-  const allGames = [];
-  const { data: { archives: urls } } = await get(`https://api.chess.com/pub/player/${user}/games/archives`);
-
-  log(`found ${urls.length} urls for ${user}`);
-  for (const url of urls) {
-    const { data: { games } } = await get(url);
-    log(`found ${games.length} games at url ${url} for ${user}`);
+export const processTask = ({ user, params: { username, alias } }) => getLastEntry(user, username)
+  .then((latestGame) => {
+    if (latestGame) {
+      log(`latest game for ${username} is found to be ${latestGame}`);
+      return latestGame.getTime();
+    }
+    return -Infinity;
+  })
+  .then((lowerDate) => filterArchives(username, lowerDate))
+  .then((urls) => getGames(urls))
+  .then((games) => {
+    const input = (typeof alias !== 'undefined') ? { username: alias } : {};
+    const jobs = [];
 
     for (const game of games) {
-      allGames.push(await addGame(user, game));
+      jobs.push(addGame(user, input, game));
     }
-  }
 
-  log(`downloaded ${allGames.length} games for ${user}`);
-  return allGames;
-};
-
-export const processUser = (user) => {
-  log(`Starting to scrape user: ${user}`);
-
-  return getGames(user)
-    .then((results) => {
-      const added = results.filter((r) => r === true);
-      log(`Added ${added.length} games of ${results.length} for ${user}`);
-    });
-};
+    return Promise.all(jobs);
+  });
 
 if (require.main === module) {
-  log('starting to scrape users', users);
-  promiseLoop(users.map((u) => processUser(u)))
-    .catch((e) => log('[error] scraping chess.com', e))
+  getTasks()
+    .then(async (tasks) => {
+      for (const task of tasks) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          await processTask(task);
+        } catch (e) {
+          log(`[ERROR] processing task: ${JSON.stringify(task)}`, e);
+        }
+      }
+    })
     .then(() => process.exit());
 }
