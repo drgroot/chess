@@ -20,15 +20,16 @@ export const processTask = ({ user, params: { username, alias } }) => getLastEnt
   })
   .then((lowerDate) => filterArchives(username, lowerDate))
   .then((urls) => getGames(urls))
-  .then((games) => {
+  .then(async (games) => {
     const input = (typeof alias !== 'undefined') ? { username: alias } : {};
     const jobs = [];
 
     for (const game of games) {
-      jobs.push(addGame(user, input, game));
+      // eslint-disable-next-line no-await-in-loop
+      jobs.push(await addGame(user, input, game));
     }
 
-    return Promise.all(jobs);
+    return jobs;
   });
 
 if (require.main === module) {
