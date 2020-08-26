@@ -14,7 +14,7 @@ resource "kubernetes_cron_job" "scraper_chesscom" {
 
   spec {
     concurrency_policy = "Allow"
-    schedule           =  "5 0 * * *"
+    schedule           =  "5 */3 * * *"
 
     job_template {
       metadata {}

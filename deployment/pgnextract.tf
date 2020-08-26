@@ -28,8 +28,8 @@ resource "kubernetes_deployment" "pgnextract" {
 
           resources {
             limits {
-              cpu = "1"
-              memory = "200Mi"
+              cpu = "500m"
+              memory = "400Mi"
             }
 
             requests {
