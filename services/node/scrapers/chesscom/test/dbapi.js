@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import nodeMQ from 'chess_jsrabbitmq';
 import { getLastEntry, getTasks } from '../src/dbapi';
-import { filterArchives } from '../src';
+import { filterArchives, processTask } from '../src';
 
 const username = 'jay';
 const add = (curdate, years, months, days) => {
@@ -66,5 +66,19 @@ describe('retreiving scrape tasks', () => {
       it('should have same number for new players', () => filterArchives('MuhammadE', -Infinity)
         .then((archives) => assert.isAbove(archives.length, 0)));
     });
+  });
+
+  describe('scraping task', () => {
+    const cUser = 'grandashak';
+    const alias = 'My Alias';
+    it('work without failure', () => processTask({ user: username, params: { username: cUser, alias } }));
+
+    it('should apply aliases', () => nodeMQ.publishMessage('dbapi', { model: 'match', method: 'find', methodData: { pgnraw: { $regex: `.*${cUser}.*` } } })
+      .then(({ results }) => {
+        for (const match of results) {
+          const players = [match.whiteName, match.blackName];
+          assert.include(players.join(','), alias);
+        }
+      }));
   });
 });

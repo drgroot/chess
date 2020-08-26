@@ -21,7 +21,7 @@ export const processTask = ({ user, params: { username, alias } }) => getLastEnt
   .then((lowerDate) => filterArchives(username, lowerDate))
   .then((urls) => getGames(urls))
   .then(async (games) => {
-    const input = (typeof alias !== 'undefined') ? { username: alias } : {};
+    const input = (typeof alias !== 'undefined') ? { [username]: alias } : {};
     const jobs = [];
 
     for (const game of games) {
