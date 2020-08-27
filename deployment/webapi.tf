@@ -12,7 +12,7 @@ data "docker_registry_image" "webapi" {
 resource "kubernetes_deployment" "web_api" {
   metadata {
     name = "web-api"
-    namespace = "chess"
+    namespace = "yusufali/chess_webapi"
   }
 
   spec {

@@ -6,7 +6,9 @@ $DIR/pre.sh $1 $2
 cd $1
 
 if [ -f services.sh ]; then
-  ./services.sh
+  ./services.sh $1 $2
+else
+  $DIR/cicd/services.sh
 fi
 
 # NPM Version Check

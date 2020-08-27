@@ -8,8 +8,8 @@ RUN apk update && apk add --no-cache --virtual python make g++
 RUN npm install && \
   npm run-script build && \
   rm -rf node_modules src && \
-  npm npm ci --production && \
-  npm clean cache --force
+  npm ci --production && \
+  npm cache clean --force 
 
 # Create slim app image
 FROM node:14-alpine AS app

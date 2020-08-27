@@ -6,9 +6,9 @@ $DIR/pre.sh $1 $2
 cd $1
 
 if [ -f services.sh ]; then
-  ./services.sh
+  ./services.sh $1 $2
 else
-  $2/cicd/services.sh
+  $DIR/cicd/services.sh $1 $2
 fi
 
 npm test
