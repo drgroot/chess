@@ -8,7 +8,7 @@ cd $1
 if [ -f services.sh ]; then
   ./services.sh $1 $2
 else
-  $DIR/cicd/services.sh $1 $2
+  $DIR/services.sh $1 $2
 fi
 
 npm test

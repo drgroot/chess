@@ -1,0 +1,15 @@
+{
+  "name": "chess_jsrabbitmq",
+  "description": "Standard javascript rabbitmq messaging library",
+  "version": "0.0.6",
+  "dry": {
+    "extends": "../package-dry.json"
+  },
+  "scripts": {
+    "test": "echo hi"
+  },
+  "dependencies": {
+    "nodejsmq": "0.1.5",
+    "chess_jslog": "*"
+  }
+}

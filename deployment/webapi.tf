@@ -6,13 +6,13 @@ data "kubernetes_service" "webapi" {
 }
 
 data "docker_registry_image" "webapi" {
-  name = "nginx"
+  name = "yusufali/chess_webapi"
 }
 
 resource "kubernetes_deployment" "web_api" {
   metadata {
     name = "web-api"
-    namespace = "yusufali/chess_webapi"
+    namespace = "chess"
   }
 
   spec {
