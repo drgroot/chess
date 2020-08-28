@@ -157,6 +157,10 @@ resource "kubernetes_deployment" "nginx" {
     template {
       metadata {
         labels = data.kubernetes_service.web.spec[0].selector
+        annotations = {
+          nginx_config = sha1(jsonencode(kubernetes_config_map.nginx_config.data))
+          ssl_cert = sha1(jsonencode(kubernetes_secret.ssl.data))
+        }
       }
 
       spec {
@@ -209,6 +213,18 @@ resource "kubernetes_deployment" "nginx" {
         container {
           name  = "sidecar"
           image = "k8s.gcr.io/git-sync:v3.1.6"
+
+          resources {
+            limits {
+              cpu    = "200m"
+              memory = "100Mi"
+            }
+            
+            requests {
+              cpu    = "5m"
+              memory = "10Mi"
+            }
+          }
 
           volume_mount {
             name       = "staticwebsite"

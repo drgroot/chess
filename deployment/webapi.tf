@@ -25,6 +25,12 @@ resource "kubernetes_deployment" "web_api" {
     template {
       metadata {
         labels = data.kubernetes_service.webapi.spec[0].selector
+        
+        annotations = {
+          rabbitmq = sha1(jsonencode(kubernetes_secret.rabbitmq.data))
+          slackurl = sha1(jsonencode(kubernetes_secret.slack_url.data))
+          redis = sha1(jsonencode(kubernetes_secret.redis.data))
+        }
       }
 
       spec {

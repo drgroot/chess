@@ -29,6 +29,12 @@ resource "kubernetes_deployment" "database_api" {
     template {
       metadata {
         labels = { app="database-api" }
+        
+        annotations = {
+          database = sha1(jsonencode(kubernetes_secret.database_url.data))
+          rabbitmq = sha1(jsonencode(kubernetes_secret.rabbitmq.data))
+          slackurl = sha1(jsonencode(kubernetes_secret.slack_url.data))
+        }
       }
 
       spec {

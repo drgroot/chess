@@ -8,7 +8,8 @@ RUN apk update && apk add --no-cache --virtual python make g++
 RUN npm install && \
   npm run-script build && \
   rm -rf node_modules src && \
-  npm install --only=prod
+  npm npm ci --production && \
+  npm clean cache --force
 
 # Create slim app image
 FROM node:14-alpine AS app
@@ -21,4 +22,6 @@ COPY package-lock.json .
 
 ENV NODE_ENV production
 USER node
-CMD ["npm","start","--unhandled-rejections=strict"]
+
+# use the node command because NPM doesnt send OS signals to code
+CMD ["node","dist/index.js"]

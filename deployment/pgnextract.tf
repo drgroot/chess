@@ -18,6 +18,11 @@ resource "kubernetes_deployment" "pgnextract" {
     template {
       metadata {
         labels = { app="pgnextract" }
+
+        annotations = {
+          rabbitmq = sha1(jsonencode(kubernetes_secret.rabbitmq.data))
+          slackurl = sha1(jsonencode(kubernetes_secret.slack_url.data))
+        }
       }
 
       spec {
