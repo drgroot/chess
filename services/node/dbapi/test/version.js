@@ -25,12 +25,6 @@ describe('Version', () => {
   describe('migrating an existing database', () => {
     it('copy database', () => copy()).timeout(30000);
 
-    it('should be the latest version', () => getCurrentVersion()
-      .then((version) => {
-        currentVersion = migrations[migrations.length - 1].version;
-        assert.strictEqual(version, currentVersion - 1);
-      }));
-
     it('should upgrade to the latest version', () => upgrade());
 
     it('should upgrade in the correct order', () => Model.find({}).sort({ date: -1 })

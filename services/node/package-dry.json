@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "chess_jslog": "*",
-    "chess_jsrabbitmq": "*"
+    "chess_jsrabbitmq": "0.0.6"
   },
   "devDependencies": {
     "@babel/cli": "7.10.5",
