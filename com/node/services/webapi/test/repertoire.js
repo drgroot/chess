@@ -4,7 +4,7 @@ import { get, post } from './games';
 
 describe('repertoire', () => {
   describe('saving repertoire', () => {
-    const pgn = fs.readFileSync(`${__dirname}/../../tools/pgnextract/test/test.pgn`, 'utf8');
+    const pgn = fs.readFileSync(`${__dirname}/../../../tools/pgnextract/test/test.pgn`, 'utf8');
 
     it('should save repertoire', () => post('/repertoire', { color: 'white', database: 'Kings Gambit', pgnBig: pgn })
       .then(({ data }) => assert.isTrue(data)));

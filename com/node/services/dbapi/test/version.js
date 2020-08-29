@@ -3,13 +3,10 @@ import { copyDatabase, clearDatabase } from 'chess_jstransfer';
 import upgrade, { migrations, getCurrentVersion } from '../src/models/version';
 import Model from '../src/models/version/schema';
 
-const copy = () => copyDatabase({ limit: 100 });
+export const copy = () => copyDatabase({ limit: 100 });
+export const clear = () => clearDatabase();
 
-let currentVersion;
 describe('Version', () => {
-  it('should return the correct version from the database', () => getCurrentVersion()
-    .then((version) => { currentVersion = version; }));
-
   it('migrations should be integers without missing numbers', () => {
     const versions = migrations.map((m) => m.version);
     versions.map((v) => assert.isNumber(v));
@@ -23,7 +20,11 @@ describe('Version', () => {
   });
 
   describe('migrating an existing database', () => {
-    it('copy database', () => copy()).timeout(30000);
+    let currentVersion;
+    before(() => copy());
+
+    it('should return the correct version from the database', () => getCurrentVersion()
+      .then((version) => { currentVersion = version; }));
 
     it('should upgrade to the latest version', () => upgrade());
 
@@ -34,24 +35,34 @@ describe('Version', () => {
             assert.isBelow(versions[i].version, versions[i - 1].version);
           }
         }
-      }));
 
-    after((() => clearDatabase({ collections: ['matches', 'versions', 'users'] })));
-  });
-
-  describe('performing a migration', () => {
-    it('should upgrade to the latest version', () => upgrade());
-
-    it('should upgrade in the correct order', () => Model.find({}).sort({ date: -1 })
-      .then((versions) => {
+        // it should follow the correct upgrade path
         const upgradePath = versions.map((v) => v.version)
           .filter((v) => v >= currentVersion)
           .reverse();
         const correctPath = migrations.filter((v) => v.version >= currentVersion)
           .map((v) => v.version).reverse();
+        assert.sameDeepMembers(upgradePath, correctPath);
+      }));
+
+    after((() => clear()));
+  });
+
+  describe('performing a migration', () => {
+    before(() => clear());
+
+    it('should upgrade to the latest version', () => upgrade());
+
+    it('should upgrade in the correct order', () => Model.find({}).sort({ date: -1 })
+      .then((versions) => {
+        const currentVersion = -1;
+        const upgradePath = versions.map((v) => v.version)
+          .filter((v) => v >= currentVersion)
+          .reverse();
 
         // make sure that the path to upgrade follows the same order as the migrations
-        assert.sameOrderedMembers(upgradePath, correctPath);
+        // for a new db, it should just be one migration
+        assert.lengthOf(upgradePath, 1);
       }));
   });
 });

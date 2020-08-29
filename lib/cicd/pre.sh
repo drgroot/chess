@@ -7,11 +7,11 @@ dry install --dry-save-package-json-to . || true
 npm install
 
 if [ ! -f .babelrc ]; then
-  cp $2/../services/node/cicd/lib/.babelrc .
+  cp $2/../com/node/cicd/lib/.babelrc .
 fi
 
 if [ ! -f .eslintrc.json ]; then
-  cp $2/../services/node/cicd/lib/.eslintrc.json .
+  cp $2/../com/node/cicd/lib/.eslintrc.json .
 fi
 
 if [ ! -f .npmignore ]; then

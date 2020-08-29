@@ -1,10 +1,13 @@
 import { assert } from 'chai';
 import rabbitmq from 'chess_jsrabbitmq';
 import app, { queueName } from '../src';
+import { clear } from './version';
 
 const send = (obj) => rabbitmq.publishMessage(queueName, obj);
 
 describe('app testing', () => {
+  before(() => clear());
+
   it('should start', () => app());
 
   it('should reject unknown methods', () => send({

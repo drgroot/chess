@@ -17,7 +17,7 @@ lint:
   before_script:
     - apk add python make g++ git bash
   script:
-    - ./cicd/runtasks.sh web services/node lib
+    - ./cicd/runtasks.sh com/node lib
 test:
   stage: test
   image: docker:stable
@@ -32,7 +32,7 @@ test:
     - docker run -d -p "5672:5672" --name rabbitmq rabbitmq
     - apk add python2 make g++ git bash nodejs npm
   script:
-    - ./cicd/runtasks.sh web services/node lib
+    - ./cicd/runtasks.sh com/node lib
 build:
   image: docker:stable
   variables:
@@ -44,7 +44,7 @@ build:
     - apk add python2 make g++ git bash nodejs npm
     - if [ ! -z $DOCKER_PASSWORD ]; then docker login --username yusufali -p $DOCKER_PASSWORD; fi
   script:
-    - ./cicd/runtasks.sh web services/node lib
+    - ./cicd/runtasks.sh com/node lib
 
 # terraform
 deploy:
