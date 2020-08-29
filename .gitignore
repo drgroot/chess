@@ -13,8 +13,7 @@ package.json
 
 # os files
 .DS_Store
-environment
-docker-compose.yml
+environment/env
 
 # build artifacts
 pgn-extract

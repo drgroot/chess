@@ -1,0 +1,17 @@
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
+
+#content {
+  @apply p-4;
+}
+
+.btn {
+  @apply rounded-md text-center text-white bg-blue-500 p-2 cursor-pointer;
+}
+
+.tableContainer {
+  @apply overflow-y-scroll overflow-x-hidden h-48;
+}

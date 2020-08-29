@@ -5,8 +5,8 @@ data "kubernetes_service" "web" {
   }
 }
 
-data "docker_registry_image" "web" {
-  name = "nginx"
+variable "WEB_HASH" {
+  type    = string
 }
 
 resource "tls_private_key" "tls_private" {
@@ -234,7 +234,7 @@ resource "kubernetes_deployment" "nginx" {
 
           env {
             name  = "GIT_SYNC_REPO"
-            value = "https://github.com/drgroot/smashElo.git"
+            value = "https://github.com/drgroot/chess.git"
           }
 
           env {
@@ -244,7 +244,7 @@ resource "kubernetes_deployment" "nginx" {
 
           env {
             name  = "GIT_SYNC_WAIT"
-            value = 1200
+            value = 0
           }
 
           env {
@@ -254,7 +254,7 @@ resource "kubernetes_deployment" "nginx" {
 
           env {
             name  = "STATICHASH"
-            value = data.docker_registry_image.web.sha256_digest
+            value = var.WEB_HASH
           }
         }
 

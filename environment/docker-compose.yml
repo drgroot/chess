@@ -1,0 +1,64 @@
+version: "3"
+services:
+
+  chess_rabbitmq:
+    container_name: chess_rabbitmq
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_VHOST: chess
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  chess_redis:
+    container_name: chess_redis
+    image: redis
+    ports:
+      - 6379:6379
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - 27017:27017
+  
+  dbapi:
+    container_name: dbapi
+    image: yusufali/chess_dbapi
+    environment:
+      RABBITMQ: amqp://chess_rabbitmq/chess
+      MONGODB: mongodb://mongo/chess
+
+  pgnextract:
+    container_name: pgnextract
+    image: yusufali/chess_pgnextract
+    environment:
+      RABBITMQ: amqp://chess_rabbitmq/chess
+
+  webapi:
+    container_name: webapi
+    image: yusufali/chess_webapi
+    environment:
+      RABBITMQ: amqp://chess_rabbitmq/chess
+
+  web:
+    container_name: web
+    image: chess_web
+    build:
+      context: ../com/node/web
+      dockerfile: ../cicd/lib/Dockerfile.dev
+    command: ["npx","webpack-dev-server","--config","webpack.dev.config.js","--watch"]
+    volumes:
+      - /code/node_modules
+      - ../com/node/web:/code
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+      - webapi
+    ports:
+      - 3000:80

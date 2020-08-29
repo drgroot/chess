@@ -1,6 +1,8 @@
 {
   "name": "chess-services-node",
   "description": "packages used by nodejs microservices",
+  "private": true,
+  "homepage": "https://chess.yusufali.ca",
   "version": "0.0.1",
   "main": "dist/index.js",
   "scripts": {
