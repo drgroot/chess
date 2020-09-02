@@ -37,7 +37,7 @@ resource "kubernetes_deployment" "rabbitmq" {
 
       spec {
         container {
-          image = "rabbitmq:3.8.4-alpine"
+          image = "rabbitmq:3.7"
           name  = "rabbitmq"
 
           resources {

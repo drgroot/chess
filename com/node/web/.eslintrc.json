@@ -9,7 +9,7 @@
     "browser": true
   },
   "ignorePatterns": [
-    "vendors/**/*.js",
+    "src/vendors/**/*",
     "src/**/*.css"
   ],
   "rules": {

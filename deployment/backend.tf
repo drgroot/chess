@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "kubernetes" {
-  version = "~> 1.11"
+  version = "1.12.0"
   load_config_file = "false"
 
   host = "https://${var.KUBERNETES_HOST}:${var.KUBERNETES_PORT}"

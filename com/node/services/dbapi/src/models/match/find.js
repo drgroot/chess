@@ -1,6 +1,6 @@
 import Match from './schema';
 
-export const find = (input) => {
+const find = (input) => {
   let query;
   if (input.constructor === Array) {
     query = Match.find(...input);
@@ -12,6 +12,25 @@ export const find = (input) => {
     .sort({ date: -1 })
     .lean()
     .exec()
+    .then((matches) => matches.map(({ _id: matchid, ...match }) => ({ matchid, ...match })));
+};
+
+export const findBig = (input) => {
+  if (input.constructor !== Array) {
+    return find(input);
+  }
+
+  const opts = [{ $match: { ...input[0] } }];
+  if (input[2].skip) {
+    opts.push({ $skip: input[2].skip });
+  }
+
+  if (input[2].limit) {
+    opts.push({ $limit: input[2].limit });
+  }
+
+  return Match.aggregate(opts)
+    .allowDiskUse(true)
     .then((matches) => matches.map(({ _id: matchid, ...match }) => ({ matchid, ...match })));
 };
 

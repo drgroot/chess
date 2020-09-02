@@ -3,7 +3,7 @@ services:
 
   chess_rabbitmq:
     container_name: chess_rabbitmq
-    image: rabbitmq:3-management
+    image: rabbitmq:3.7-management
     environment:
       RABBITMQ_DEFAULT_VHOST: chess
     ports:

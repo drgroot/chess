@@ -7,8 +7,8 @@ import State from './lib/state';
 import { get } from './lib/request';
 import stripFen from './lib/fen';
 
-import '../vendors/chessboardjs/chessboard-1.0.0';
-import '../vendors/chessboardjs/chessboard-1.0.0.css';
+import './vendors/chessboardjs/chessboard-1.0.0';
+import './vendors/chessboardjs/chessboard-1.0.0.css';
 
 const percentFormatter = new Intl.NumberFormat('en-US', { style: 'percent', maximumSignificantDigits: 3 });
 
@@ -210,7 +210,7 @@ state.subscribe('n', updateGames);
 
 // MAIN
 const matches = new Set();
-const getGames = (skip = 0) => get('/api/games', { skip })
+const getGames = (skip = 0) => get('/api/games', { skip, chunkSize: 1000 })
   .then(({ games, finished }) => {
     const data = [];
     for (const g of games) {

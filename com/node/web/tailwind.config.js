@@ -6,7 +6,7 @@ const path = require('path');
 // eslint-disable-next-line import/no-dynamic-require
 const gradients = require(`${__dirname}/tailwind/plugin.gradients`);
 
-const extensions = ['.html', '.pug', '.ejs', 'css'];
+const extensions = ['.html', '.pug', '.ejs', '.css'];
 const getAllFiles = (dirPath, arrayOfFiles = []) => {
   const files = fs.readdirSync(dirPath);
 
