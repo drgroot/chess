@@ -11,8 +11,8 @@
     "test": "npx nyc mocha --require @babel/register --exit"
   },
   "dependencies": {
-    "chess_jslog": "*",
-    "chess_jsrabbitmq": "0.0.6"
+    "chess_jslog": "0.0.4",
+    "chess_jsrabbitmq": "0.0.7"
   },
   "devDependencies": {
     "@babel/cli": "7.10.5",
