@@ -41,13 +41,13 @@ resource "kubernetes_deployment" "web_api" {
 
           resources {
             limits {
-              cpu = "2"
-              memory = "1Gi"
+              cpu = "1"
+              memory = "4Gi"
             }
 
             requests {
-              cpu = "100m"
-              memory = "50Mi"
+              cpu = "500m"
+              memory = "800Mi"
             }
           }
           

@@ -32,9 +32,20 @@ resource "cloudflare_origin_ca_certificate" "tls_cert" {
   requested_validity = 5475
 }
 
+resource "kubernetes_config_map" "sidecarscript" {
+  metadata {
+    name = "chess-sidecarscript"
+    namespace = "chess"
+  }
+
+  data = {
+    "start.sh" = "rm -rf /git/html && git clone --single-branch --depth 1 -b $GIT_BRANCH $GIT_REPO $GIT_DESTINATION && tail -f /dev/null"
+  }
+}
+
 resource "kubernetes_config_map" "nginx_config" {
   metadata {
-    name = "chess-webapi"
+    name = "nginx-conf"
     namespace = "chess"
   }
 
@@ -212,44 +223,49 @@ resource "kubernetes_deployment" "nginx" {
 
         container {
           name  = "sidecar"
-          image = "k8s.gcr.io/git-sync:v3.1.6"
+          image = "alpine/git"
+
+          command = ["sh"]
+          args = ["-c","/start.sh"]
 
           resources {
             limits {
-              cpu    = "200m"
+              cpu    = "100m"
               memory = "100Mi"
             }
             
             requests {
-              cpu    = "200m"
+              cpu    = "100m"
               memory = "10Mi"
             }
           }
 
           volume_mount {
             name       = "staticwebsite"
-            mount_path = "/tmp/git"
+            mount_path = "/git"
             read_only  = false
           }
 
+          volume_mount {
+            name       = "clonescript"
+            mount_path = "/start.sh"
+            sub_path   = "start.sh"
+            read_only  = true
+          }
+
           env {
-            name  = "GIT_SYNC_REPO"
+            name  = "GIT_REPO"
             value = "https://github.com/drgroot/chess.git"
           }
 
           env {
-            name  = "GIT_SYNC_BRANCH"
+            name  = "GIT_DESTINATION"
+            value = "/git/html" 
+          }
+
+          env {
+            name  = "GIT_BRANCH"
             value = "gh-pages"
-          }
-
-          env {
-            name  = "GIT_SYNC_WAIT"
-            value = 0
-          }
-
-          env {
-            name  = "GIT_SYNC_DEST"
-            value = "html"
           }
 
           env {
@@ -267,6 +283,14 @@ resource "kubernetes_deployment" "nginx" {
           name   = "config"
           config_map {
             name = kubernetes_config_map.nginx_config.metadata[0].name
+          }
+        }
+
+        volume {
+          name   = "clonescript"
+          config_map {
+            default_mode = "0555"
+            name         = kubernetes_config_map.sidecarscript.metadata[0].name
           }
         }
 

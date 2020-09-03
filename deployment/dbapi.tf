@@ -45,13 +45,13 @@ resource "kubernetes_deployment" "database_api" {
 
           resources {
             limits {
-              cpu = "700m"
-              memory = "600Mi"
+              cpu = "1"
+              memory = "4Gi"
             }
 
             requests {
-              cpu = "125m"
-              memory = "200Mi"
+              cpu = "500m"
+              memory = "800Mi"
             }
           }
 

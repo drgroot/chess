@@ -23,9 +23,11 @@ const updateTable = ({
         nodes.delete(key);
 
         if (nodeUpdator) {
+          const row = document.getElementById(idGen(key));
           nodeUpdator(
-            document.getElementById(idGen(key)),
             entry,
+            row,
+            row.children,
           );
         }
       } else {
@@ -43,7 +45,7 @@ const updateTable = ({
             dom.classList.add(...tdClassList);
             return dom;
           });
-        rowCallback(rowDoms);
+        rowCallback(entry, row, rowDoms);
 
         table.appendChild(row);
       }
