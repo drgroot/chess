@@ -9,7 +9,6 @@ export const find = (input) => {
   }
 
   return query
-    .sort({ date: -1 })
     .lean()
     .exec()
     .then((matches) => matches.map(({ _id: matchid, ...match }) => ({ matchid, ...match })));

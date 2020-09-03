@@ -1,8 +1,11 @@
+import { clearDatabase } from 'chess_jstransfer';
 import fs from 'fs';
 import { assert } from 'chai';
 import { get, post } from './games';
 
 describe('repertoire', () => {
+  before(() => clearDatabase());
+
   describe('saving repertoire', () => {
     const pgn = fs.readFileSync(`${__dirname}/../../../tools/pgnextract/test/test.pgn`, 'utf8');
 

@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import log from 'chess_jslog';
-import { PORT } from './url';
+import { weburl, PORT } from './url';
 
 import gamesRouter from './routes/games';
 import repertoireRouter from './routes/repertoire';
 
-const corsOption = {}; // { origin: weburl, credentials: true, optionsSuccessStatus: 200 };
+const corsOption = { origin: weburl, credentials: true, optionsSuccessStatus: 200 };
 
 const routes = [
   { method: 'get', path: '/', args: [(req, res) => res.send('Works')] },
