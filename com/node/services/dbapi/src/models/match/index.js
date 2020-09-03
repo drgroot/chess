@@ -9,7 +9,7 @@ import {
   delMove,
 } from './write';
 import {
-  findBig as find,
+  find,
   findPosition,
   getRepertoire,
   noAnnotations,
