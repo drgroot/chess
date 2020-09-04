@@ -14,7 +14,7 @@ router
         model: 'match',
         methodData: [
           { repertoire: null },
-          {},
+          { pgnraw: 0 },
           {
             sort: { date: -1 },
             limit: parseInt(chunkSize, 10),

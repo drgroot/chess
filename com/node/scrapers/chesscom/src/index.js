@@ -3,9 +3,26 @@ import { getTasks, getLastEntry } from './dbapi';
 import { getArchives, getGames } from './chesscom';
 import addGame from './game';
 
-export const filterArchives = (username, lowerDate) => getArchives(username)
+export const filterArchives = (username, lowerTime) => getArchives(username)
   .then((archives) => {
-    const urls = archives.filter(({ date }) => date.getTime() > lowerDate).map(({ url }) => url);
+    const lowerDate = new Date(lowerTime);
+    const urls = archives
+      .filter(({ date }) => {
+        if (date.getTime() > lowerTime) {
+          return true;
+        }
+
+        if (
+          date.getMonth() === lowerDate.getMonth()
+          && date.getFullYear() === lowerDate.getFullYear()
+          && date.getMonth() === (new Date()).getMonth()
+        ) {
+          return true;
+        }
+
+        return false;
+      })
+      .map(({ url }) => url);
     log(`found ${archives.length} archives for ${username}. Taking ${urls.length} for scraping.`, urls);
     return urls;
   });
@@ -14,7 +31,7 @@ export const processTask = ({ user, params: { username, alias } }) => getLastEnt
   .then((latestGame) => {
     if (latestGame) {
       log(`latest game for ${username} is found to be ${latestGame}`);
-      return latestGame.getTime();
+      return (new Date(latestGame.getFullYear(), latestGame.getMonth(), 1)).getTime();
     }
     return -Infinity;
   })

@@ -6,7 +6,7 @@ export const getArchives = (username) => get(`https://api.chess.com/pub/player/$
     const [month, year] = url.split('/').reverse();
     return {
       url,
-      date: new Date(parseInt(year, 10), parseInt(month, 10)),
+      date: new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1),
     };
   }));
 

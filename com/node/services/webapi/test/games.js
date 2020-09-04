@@ -30,5 +30,11 @@ describe('getting games', () => {
           }
           assert.isAbove(allGames.size, check);
         })));
+
+    it('should not have pgn raw', () => {
+      for (const game of allGames) {
+        assert.isUndefined(game.pgnraw);
+      }
+    });
   });
 });
