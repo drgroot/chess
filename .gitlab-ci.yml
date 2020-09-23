@@ -49,19 +49,13 @@ build:
 # terraform
 deploy:
   stage: deploy
-  image: docker
+  image: yusufali/terraform
   before_script:
     - export TF_VAR_WEB_HASH=$(git log -1 --pretty=format:"%h" com/node/web)
-    - apk add bash unzip wget gnupg curl
-    - wget https://releases.hashicorp.com/terraform/0.12.25/terraform_0.12.25_linux_amd64.zip
-    - unzip *.zip
-    - chmod +x terraform
-    - mv terraform /bin/.
-    - cd deployment
-    - for f in secrets/*.gpg; do echo $SECRET_PASSPHRASE | gpg -d --batch --yes --passphrase-fd 0 "$f" > "secrets/$(basename $f .gpg)"; done
-    - source secrets/env
-    - tar xzvf secrets/kube.tar.gz -C secrets/
-    - terraform init
   script:
+    - cd deployment
+    - decrypt secrets
+    - source secrets/env
+    - terraform init
     - terraform plan
     - if [ "$CI_COMMIT_REF_NAME" = "master" ]; then terraform apply -auto-approve || true; fi
