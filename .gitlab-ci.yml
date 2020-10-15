@@ -49,7 +49,7 @@ build:
 # terraform
 deploy:
   stage: deploy
-  image: yusufali/terraform:0.12.25
+  image: yusufali/terraform
   before_script:
     - export TF_VAR_WEB_HASH=$(git log -1 --pretty=format:"%h" com/node/web)
   script:
