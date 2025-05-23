@@ -6,7 +6,7 @@ flask==3.1.0
 pyyaml==6.0.2
 servc==1.11.3
 boto3==1.36.3
-deltalake==0.20.2
+deltalake==0.25.5
 requests
 pydantic
 sqlglot[rs]==26.18.1
