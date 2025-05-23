@@ -1,19 +1,4 @@
-# terraform stuff
-deployment/secrets/*
-deployment/.terraform
-
-# nodejs stuff
-dist
-node_modules
-.nyc_output
-.eslintrc.json
-.babelrc
-package.json
-.npmignore
-
-# os files
-.DS_Store
-environment/env
-
-# build artifacts
-pgn-extract
+__pycache__
+.coverage*
+*.swp
+dag.json

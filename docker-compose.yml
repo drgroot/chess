@@ -1,0 +1,7 @@
+services:
+  python:
+    image: mcr.microsoft.com/vscode/devcontainers/python
+    volumes:
+      - .:/workspace:cached
+      - /Users/yusuf/Documents/bin:/custom_bin:ro
+    command: sleep infinity

@@ -1,0 +1,20 @@
+updates:
+- commit-message:
+    prefix: fix
+  directory: /
+  package-ecosystem: docker
+  schedule:
+    interval: daily
+- commit-message:
+    prefix: fix
+  directory: /
+  package-ecosystem: pip
+  schedule:
+    interval: daily
+- commit-message:
+    prefix: fix
+  directory: /
+  package-ecosystem: github-actions
+  schedule:
+    interval: daily
+version: 2
