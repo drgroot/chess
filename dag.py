@@ -10,7 +10,12 @@ common_step = {"type": "aks", "queue": "chess"}
 common = {
     "resources": {"requests": req, "limits": req},
     "pullSecret": ["cluster-docker-private"],
-    "env": [],
+    "env": [
+        {
+            "name": "CONF__WORKER__EXITON4XX",
+            "value": "true"
+        }
+    ],
     "type": ProvisionerType.DEPLOYMENT.value,
     "maxReplicas": 1,
     "image": "registry.yusufali.ca/chess/etl",
