@@ -9,7 +9,7 @@ boto3==1.38.29
 deltalake==1.0.2
 requests
 pydantic
-sqlglot[rs]==26.24.0
+sqlglot[rs]==26.25.0
 SQLAlchemy==2.0.41
 
 -i https://pypi.yusufali.ca/simple --trusted-host pypi.yusufali.ca
